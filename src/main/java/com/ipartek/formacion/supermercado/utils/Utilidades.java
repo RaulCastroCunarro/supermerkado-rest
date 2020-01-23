@@ -1,5 +1,7 @@
 package com.ipartek.formacion.supermercado.utils;
 
+import java.util.ArrayList;
+
 public class Utilidades {
 	
 	private static final int INCORRECTO = -1;
@@ -22,6 +24,24 @@ public class Utilidades {
 				    }
 				}
 			}
+		}
+		
+		return resultado;
+	}
+	
+	public static int contarPalabras (String frase) {
+		int resultado = 0;
+		String[] partes = null;
+		ArrayList<String> palabras = new ArrayList<String>();
+		
+		if (frase != null && frase.trim().length() != 0) {
+			partes = frase.split("[\\W\\_]");
+			for (int i = 0; i < partes.length; i++) {
+				if (partes[i].length() > 0) {
+					palabras.add(partes[i]);
+				}
+			}
+			resultado = palabras.size();
 		}
 		
 		return resultado;

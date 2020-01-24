@@ -36,7 +36,7 @@ public class ProductoRestController extends HttpServlet {
 	private CategoriaDAO categoriaDao;
 
 	int idProducto = 0;
-	
+
 	int statusCode = 0;
 
 	String pathInfo = "";
@@ -74,6 +74,12 @@ public class ProductoRestController extends HttpServlet {
 
 		jsonResponseBody = null;
 		pathInfo = request.getPathInfo();
+		
+		//TODO Ponerlo en el filtro
+		response.addHeader("Access-Control-Allow-Origin:", "192.168.0.1");
+		response.addHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
+		response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+        
 		try {
 			idProducto = Utilidades.obtenerId(pathInfo);
 
@@ -104,8 +110,23 @@ public class ProductoRestController extends HttpServlet {
 
 		try {
 			if (idProducto == -1) {
+				String orden = "ASC";
+				String columna = "nombre";
+				
+				if (request.getParameter("orden") != null) {
+					orden = request.getParameter("orden");
+				}
+				if (request.getParameter("columna") != null) {
+					columna = request.getParameter("columna");
+				}
+				
 				// obtenr productos de la BD
-				ArrayList<Producto> lista = (ArrayList<Producto>) productoDao.getAll();
+				ArrayList<Producto> lista = null;
+				if (request.getParameter("orden") != null || request.getParameter("columna") != null){
+					lista = (ArrayList<Producto>) productoDao.getAllOrdenado(columna, orden);
+				}else {
+					lista = (ArrayList<Producto>) productoDao.getAll();
+				}
 				jsonResponseBody = new Gson().toJson(lista);
 				// response status code
 				statusCode = HttpServletResponse.SC_OK;
